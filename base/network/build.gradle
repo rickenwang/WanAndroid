@@ -1,0 +1,18 @@
+
+apply from: "$rootDir.absolutePath/build_gradle/library.gradle"
+
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_7
+    targetCompatibility = JavaVersion.VERSION_1_7
+}
+
+dependencies {
+
+    api project(path: ':base:kv')
+
+    api "com.google.code.gson:gson:$rootProject.version_config.gson"
+    api "com.squareup.retrofit2:retrofit:$rootProject.version_config.retrofit"
+    api "com.squareup.retrofit2:converter-gson:$rootProject.version_config.retrofit"
+    api "com.squareup.okhttp3:logging-interceptor:$rootProject.version_config.okhttp_logging_interceptor"
+}

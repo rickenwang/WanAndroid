@@ -1,0 +1,12 @@
+apply from: "$rootDir.absolutePath/build_gradle/library.gradle"
+
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_7
+    targetCompatibility = JavaVersion.VERSION_1_7
+}
+
+dependencies {
+
+    api "cn.therouter:router:${rootProject.version_config.the_router}"
+}

@@ -1,0 +1,9 @@
+apply from: "$rootDir.absolutePath/build_gradle/library.gradle"
+
+dependencies {
+
+    api project(path: ':feature:common')
+
+    implementation "io.github.youth5201314:banner:$rootProject.version_config.banner"
+    kapt "cn.therouter:apt:${rootProject.version_config.therouter_kapt}"
+}

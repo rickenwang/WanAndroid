@@ -1,0 +1,9 @@
+apply from: "$rootDir.absolutePath/build_gradle/library.gradle"
+
+dependencies {
+
+    api project(path: ':feature:common')
+    api project(path: ':base:network')
+
+    kapt "cn.therouter:apt:${rootProject.version_config.therouter_kapt}"
+}

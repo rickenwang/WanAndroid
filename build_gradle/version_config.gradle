@@ -1,0 +1,101 @@
+
+ext {
+
+    version_config = [
+
+            /////////////////////////////build 相关///////////////////////////////////////////////////
+            /////////////////////////////build 相关///////////////////////////////////////////////////
+            compileSdkVersion         : 31,//工程编译版本
+            targetSdkVersion          : 31,//目标版本，一般要与 compile 一致
+            minSdkVersion             : 21,//最低支持版本
+            versionCode               : current_version.CODE,//versionCode
+            versionName               : current_version.NAME,//versionName
+            jvmTarget                 : "1.8",//jvm 版本
+            sourceCompatibility       : JavaVersion.VERSION_1_8,//java 源码编译版本
+            targetCompatibility       : JavaVersion.VERSION_1_8,//java 目标编译版本
+            build_tools               : "4.1.0",//build tools  插件版本，升级这个版本同样要升级 gradle 版本
+
+            /////////////////////////////android 相关///////////////////////////////////////////////////
+            /////////////////////////////android 相关///////////////////////////////////////////////////
+            androidx_core             : "1.7.0",//androidx_core 版本
+            appcompat                 : "1.3.0",//appcompat 版本
+            multidex                  : "2.0.1",//multidex 拆分包
+            support_multidex          : "1.0.3",//support_multidex 版本,不加这个项目编不过
+            material                  : "1.4.0",//material 版本
+            room_version              : "2.4.0",//room 数据库版本
+            constraintlayout          : "2.1.3",//约束布局版本
+            lifecycle_process         : "2.3.0",//生命周期相关
+            exifinterface             : "1.3.3",//读取和写入图片文件 EXIF 标记
+            recyclerview              : "1.2.1",//recyclerview
+            activity                  : "1.4.0",//activity
+            fragment                  : "1.4.1",//fragment
+            viewpager2                : "1.0.0",//viewpager2
+
+            /////////////////////////////kotlin 相关///////////////////////////////////////////////////
+            /////////////////////////////kotlin 相关///////////////////////////////////////////////////
+            kotlin_version            : "1.5.30",//kotlin 版本
+            coroutine_version         : "1.3.9",//kotlin 协程版本
+            sqlite_ktx                : "2.1.0",//sqlite kotlin
+            activity_ktx              : "1.2.3",//activity kotlin
+            fragment_ktx              : "1.3.5",//fragment kotlin
+            lifecycle_runtime_ktx     : "2.4.0-alpha03",//lifecycle runtime kotlin
+            lifecycle_viewmodel_ktx   : "2.4.0-alpha03",//lifecycle runtime kotlin
+
+            /////////////////////////////第三方 相关///////////////////////////////////////////////////
+            /////////////////////////////第三方 相关///////////////////////////////////////////////////
+            TINKER_VERSION            : "1.9.14.18",//tinker 热修复
+            dokka                     : "1.4.30",//kotlin 文档生成工具
+            qapm                      : "2.34",//用于监控性能,插件版本
+            qapm_sdk                  : "5.3.0-PREVIEW-SNAPSHOT",//用于监控性能，sdk 版本
+            moshi_kotlin              : "1.11.0",//kotlin 解析 json 框架
+            moshi_kotlin_kapt         : "1.11.0",//用于 kapt 的编译
+            retrofit                  : "2.6.4",//retrofit2
+            okhttp_logging_interceptor: "3.10.0",//okhttp log 的拦截器
+            glide                     : "4.12.0",//图片加载
+            beacon                    : "4.1.13",//灯塔（稳定版本），用于数据上报 https://iwiki.woa.com/pages/viewpage.action?pageId=119406536
+            gson                      : "2.8.7",//gson， 用于 json 解析
+            dagger                    : "2.31.1",//dagger,依赖注入框架
+            timber                    : "4.7.1",//log 日志打印
+            cos_android_nobeacon      : "5.8.3",//腾讯云传输 sdk，没有灯塔版本
+            cos_ktx                   : "5.6.5",//腾讯云 kotlin 版本
+            bolts                     : "1.4.0",//一个异步处理框架，类似于 Rxjava，但是更加轻量（ todo 话说有协程了这个没必要）
+            permissionx               : "1.6.0",//一个权限请求库
+            swiperefreshlayout        : "1.1.0",//一个下拉刷新库
+            multitype                 : "4.3.0",//一个适配多种不同的 recyclerview 的 adapter
+            agentweb                  : "v5.0.0-alpha.1-androidx",//简而言之，就是一个封装好的 WebView，解决了一些兼容性问题
+            justson_downloader        : "v5.0.0-androidx",//和上面的是配套的。这个是下载文件用的
+            subsampling               : "3.10.0",//长图加载库
+            exoplayer                 : "2.17.0",//在线播放视频库
+            photoview                 : "2.0.0",//图片查看器
+            androidsvg                : "1.4",//一个支持 svg 的库
+            webpdecoder               : "2.0.4.11.0",//和 glide 配套的，一个用于解码 webp 的库
+            pickerview                : "4.1.9",//图片选择是的预览库
+            pictureselector           : "v3.0.4",//图片选择器
+            guava                     : "31.1-android",//guava工具库
+            toast_utils               : "10.3",//一个 Toast 工具
+            sensitive                 : "3.8.8",//合规扫描插件
+            sensitive_base            : "1.9.0",//合规扫描插件 base 注释用
+            router                    : '1.0.0',//路由，用于模块化的解耦，注意这个库的源码在 QCloud 中
+            router_core               : '1.0.1',//路由核心模块，用于模块化的解耦，注意这个库的源码在 QCloud 中
+            scanlib                   : '1.0.0',//扫描库，注意这个库的源码在 QCloud 中
+            mmkv                      : '1.2.13',//sp 替换库，支持跨进程
+            wechat_sdk                : '6.8.0', // 微信sdk
+            smh_sdk                   : '1.1.4', // SMH sdk
+            the_router                : '1.1.1', // 路由库
+            therouter_kapt            : '1.1.1', //
+            banner                    : '2.2.2', // 一个 Banner 库
+
+            /////////////////////////////测试 相关///////////////////////////////////////////////////
+            /////////////////////////////测试 相关///////////////////////////////////////////////////
+            junit                     : "4.13.2",//java 单元测试
+            android_junit             : "1.1.3",//android 单元测试
+            android_rules             : "1.3.0",//android rules
+            espresso_core             : "3.4.0",//espresso_core
+            snakeyaml                 : "1.25",//用于解析 yaml 语法的库
+            utilcodex                 : "1.31.0",//一个封装好的第三方测试库
+            fragment_kotlin_test      : "1.3.5",//fragment test
+
+    ]
+}
+
+

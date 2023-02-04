@@ -1,0 +1,108 @@
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+    id 'therouter'
+    id 'kotlin-kapt'
+}
+
+// apply plugin: 'kotlin-kapt'
+
+android {
+    namespace "com.leaf.wanandroid"
+    signingConfigs {
+        //签名debug 和 release 是一样的，只有在蓝盾上才会真正的签名
+        debug {
+            keyAlias current_signing.keyAlias
+            keyPassword current_signing.keyPassword
+            storeFile file(current_signing.storeFile)
+            storePassword current_signing.storePassword
+            v1SigningEnabled true
+            v2SigningEnabled true
+        }
+        release {
+            keyAlias current_signing.keyAlias
+            keyPassword current_signing.keyPassword
+            storeFile file(current_signing.storeFile)
+            storePassword current_signing.storePassword
+            v1SigningEnabled true
+            v2SigningEnabled true
+        }
+    }
+
+    compileSdkVersion rootProject.version_config.compileSdkVersion
+
+    defaultConfig {
+
+        applicationId "com.leaf.wanandroid"
+        minSdkVersion rootProject.version_config.minSdkVersion
+        targetSdkVersion rootProject.version_config.targetSdkVersion
+
+        // versionName 3 段为正式版，
+        // versionCode 正式版为10的倍数
+        versionCode rootProject.version_config.versionCode
+        versionName rootProject.version_config.versionName
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        /**
+         * you can use multiDex and install it in your ApplicationLifeCycle implement
+         */
+        multiDexEnabled true
+
+
+        ndk {
+            abiFilters "armeabi-v7a", 'arm64-v8a'
+        }
+    }
+
+    buildTypes {
+        release {
+            debuggable false
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
+
+        debug {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.debug
+        }
+    }
+    compileOptions {
+        sourceCompatibility rootProject.version_config.sourceCompatibility
+        targetCompatibility rootProject.version_config.targetCompatibility
+    }
+    kotlinOptions {
+        jvmTarget = rootProject.version_config.jvmTarget
+    }
+
+    packagingOptions {
+        // More than one file was found with OS independent path 'META-INF/setting_debug.kotlin_module'.
+        exclude 'META-INF/setting_debug.kotlin_module'
+        exclude 'META-INF/AL2.0'
+    }
+}
+
+dependencies {
+
+    implementation project(':business:home')
+
+    implementation project(':feature:collect')
+    implementation project(':feature:article')
+    implementation project(':feature:banner')
+    implementation project(':feature:login')
+    implementation project(':feature:server')
+
+    api "cn.therouter:router:${rootProject.version_config.the_router}"
+    kapt "cn.therouter:apt:${rootProject.version_config.therouter_kapt}"
+
+    implementation 'androidx.core:core-ktx:1.7.0'
+    implementation 'androidx.appcompat:appcompat:1.4.1'
+    implementation 'com.google.android.material:material:1.5.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.3'
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+}

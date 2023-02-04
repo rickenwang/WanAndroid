@@ -1,0 +1,234 @@
+import groovy.json.JsonOutput
+
+// 定义不同的环境，如果环境比较复杂，可以考虑使用 map 来表示环境，这里简单使用 String
+ext.ENV_LIST = [
+        dev    : 'dev.example.cn',
+        test   : 'test.example.cn',
+        prepub : 'prepub.example.cn',
+        release: 'release.example.cn'
+]
+
+// 在 Gradle 的 ext 属性中定义
+ext {
+
+    // 配置 app 运行的环境
+    current_env = [
+                    HOST             : ENV_LIST.dev,
+                    ENV_TYPE         : 1,   //对应AppEnvironmentType的枚举类型
+                    IS_RELEASE       : false,
+                    ENV_TYPE_STR     : "dev"
+    ]
+    configEnv(ENV_LIST)
+
+    // 配置 App 版本
+    current_version = [ // 默认值
+                        NAME    : "1.0.0",
+                        CODE    : 1
+    ]
+    configVersion()
+
+    // 配置签名信息
+    current_signing = [ // 默认值
+                        storeFile    : rootDir.getAbsolutePath() + '/sign_debug.keystore',
+                        storePassword: 'android',
+                        keyAlias     : 'androiddebugkey',
+                        keyPassword  : 'android'
+    ]
+    configSigning()
+
+    // 其他配置
+    cos_upload_args = [
+            bucket      : "bucket-1250000000", // cos桶的名称
+            region      : "ap-guangzhou",             // cos桶的地狱
+            secret_id   : "",                         // cos 的密钥ID （需要申请）
+            secret_key  : "",                         // cos 的密钥key（需要申请）
+    ]
+    setCosUploadArgs()
+}
+
+// 通过读取 Properties 来配置环境
+private void configEnv(ENV_LIST) {
+    def dev = "dev"
+    def test = "test"
+    def prepub = "prepub"
+    def release = "release"
+
+    def defaultEnv = dev
+    String env = getStringProperty("CUSTOM_ENV", defaultEnv)
+    if (!(env == dev || env == prepub || env == release || env == test)) {
+        env = defaultEnv
+    }
+
+    Set<String> keys = current_env.keySet()
+    for (String env_key : keys) {
+        if (env_key == "IS_RELEASE") {
+            current_env.put(env_key, env == release ? "true" : "false")
+        } else if (env_key == "ENV_TYPE") {
+            switch (env) {
+                case dev:
+                    current_env.put(env_key, 1)
+                    break
+                case test:
+                    current_env.put(env_key, 2)
+                    break
+                case prepub:
+                    current_env.put(env_key, 3)
+                    break
+                case release:
+                    current_env.put(env_key, 4)
+                    break
+                default:
+                    current_env.put(env_key, 1)
+            }
+        } else if (env_key == "ENV_TYPE_STR") {
+            current_env.put(env_key, env)
+        } else if (env_key == "HOST") {
+            current_env.put(env_key, ENV_LIST.get(env))
+        }
+    }
+}
+
+task echoVersionName {
+    doLast {
+        println "$current_version.NAME"
+    }
+}
+
+
+private String getStringProperty(String key, String defaultValue) {
+    String value = System.getenv(key)
+    if (value != null) {
+        if (value.isEmpty()) {
+            return defaultValue
+        }
+        return value
+    } else {
+        if (hasProperty(key)) {
+            value = getProperty(key)
+            return value
+        }
+    }
+    return defaultValue
+}
+
+private String getPatchProperty() {
+    String version = System.getenv("PATCH_VERSION")
+    String build_no = System.getenv("PATCH_BUILD_NO")
+    if (version != null && build_no != null) {
+        return "${version}.${build_no}"
+    } else {
+        if (hasProperty("PATCHS")) {
+            String value = getProperty("PATCHS")
+            return value
+        }
+    }
+    return ""
+}
+
+private String getCosStringProperty(Properties cos_property, String key, String defaultValue) {
+    String value = System.getenv(key)
+    if (value != null) {
+        if (value.isEmpty()) {
+            return defaultValue
+        }
+        return value
+    } else {
+        if (cos_property.containsKey(key)) {
+            value = cos_property.getProperty(key)
+            //print("key=$key value=$value")
+            return value
+        } else {
+            print("not exist key=$key")
+        }
+    }
+    return defaultValue
+}
+
+
+private void configSigning() { // 取CI环境变量的值
+
+    String filePath = System.getenv("KEYSTORE_PATH")
+    String storePas = System.getenv("STOREPASS")
+    String alias = System.getenv("ALIAS")
+    String keyPas = System.getenv("KEYPASS")
+    if (filePath != null && storePas != null && alias != null && keyPas != null) {
+        current_signing.put('storeFile', filePath)
+        current_signing.put('storePassword', storePas)
+        current_signing.put('keyAlias', alias)
+        current_signing.put('keyPassword', keyPas)
+    }
+
+}
+
+// 优先取CI环境变量本地请在gradle.properties文件中修改
+private void configVersion() {
+
+    // 读取系统变量中的参数
+    String major = System.getenv("MAJOR_VERSION")
+    String minor = System.getenv("MINOR_VERSION")
+    String fix = System.getenv("FIX_VERSION")
+    String versionName = "1.0.0"
+
+    // 配置 VERSION_NAME
+    if (major != null && minor != null && fix != null) {
+        versionName = major + "." + minor + "." + fix
+    } else {
+        if (hasProperty("VERSION_NAME")) {
+            versionName = getProperty("VERSION_NAME")
+        }
+    }
+    current_version.put("NAME", versionName)
+
+
+    String v_code = System.getenv("VERSION_CODE")
+    if (v_code == null) {
+        v_code = "1"
+        if (hasProperty("VERSION_CODE")) {
+            v_code = getProperty("VERSION_CODE")
+        }
+    }
+    current_version.put("CODE", Integer.valueOf(v_code))
+}
+
+
+private void setCosUploadArgs() {
+    Properties cos_property = new Properties()
+    File propertyFile = new File(rootDir.getAbsolutePath(), "tencent_cos.properties")
+    if (propertyFile.exists()) {
+        cos_property.load(propertyFile.newDataInputStream())
+        //print("---------tencent_cos.properties exist----------")
+        //print(cos_property)
+    } else {
+        print("---------tencent_cos.properties not exist----------")
+    }
+
+    def secret_id = getCosStringProperty(cos_property, "COS_SECRET_ID", "")
+    def secret_key = getCosStringProperty(cos_property, "COS_SECRET_KEY", "")
+    def bucket = getCosStringProperty(cos_property, "BUCKET", "cofile-static-1258344699")
+    def region = getCosStringProperty(cos_property, "REGION", "ap-guangzhou")
+
+    String env = getStringProperty("CUSTOM_ENV", "release")
+    String change_log = getStringProperty("CHANGE_LOG", "")
+
+    cos_upload_args.put("bucket", bucket)
+    cos_upload_args.put("region", region)
+    cos_upload_args.put("secret_id", secret_id)
+    cos_upload_args.put("secret_key", secret_key)
+
+    println change_log
+    if (!change_log.isEmpty()) {
+        def logs
+        if (change_log.indexOf("|") != -1) {
+            logs = change_log.split("\\|")
+        } else {
+            logs = change_log.split("\\\n")
+        }
+        boolean sys = System.getenv("CHANGE_LOG") == null
+        for (def log : logs) {
+            if (sys) { // 本地变量
+                log = new String(log.getBytes("iso-8859-1"), "UTF-8") // python 转json需要 unicode 编码
+            }
+            cos_upload_args["change_log"].add(log)
+        }
+    }
+}

@@ -1,0 +1,30 @@
+[
+  {
+    "path": "http://wanandroid.com/main",
+    "className": "com.leaf.wanandroid.MainActivity",
+    "action": "",
+    "description": "",
+    "params": {}
+  },
+  {
+    "path": "http://wanandroid.com/login",
+    "className": "com.leaf.feature.login.ui.LoginActivity",
+    "action": "",
+    "description": "",
+    "params": {}
+  },
+  {
+    "path": "http://wanandroid.com/collect_article",
+    "className": "com.leaf.feature.collect.ui.CollectArticleListFragment",
+    "action": "",
+    "description": "",
+    "params": {}
+  },
+  {
+    "path": "http://wanandroid.com/home",
+    "className": "com.leaf.business.home.HomeFragment",
+    "action": "",
+    "description": "",
+    "params": {}
+  }
+]
