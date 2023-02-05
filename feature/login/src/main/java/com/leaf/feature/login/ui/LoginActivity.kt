@@ -1,5 +1,6 @@
 package com.leaf.feature.login.ui
 
+import android.app.Activity
 import android.os.Bundle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.ViewModelProvider
@@ -74,8 +75,8 @@ class LoginActivity: BaseActivity() {
         // 1. 查看携带的信息，看是否指定了落地页，否则跳转到默认的落地页
         TheRouter.build("http://wanandroid.com/main")
             .navigation(this, object : NavigationCallback() {
-                override fun onFound(navigator: Navigator) {
-                    super.onFound(navigator)
+                override fun onActivityCreated(navigator: Navigator, destActivity: Activity) {
+                    super.onActivityCreated(navigator, destActivity)
                     this@LoginActivity.finish()
                 }
             })

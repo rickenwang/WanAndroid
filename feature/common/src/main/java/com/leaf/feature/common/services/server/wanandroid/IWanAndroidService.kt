@@ -3,6 +3,7 @@ package com.leaf.feature.common.services.server.wanandroid
 import com.leaf.base.network.NetworkManager
 import com.leaf.feature.common.services.server.wanandroid.adapter.WanAndroidCallAdapterFactory
 import com.leaf.feature.common.services.server.wanandroid.entities.ListArticleEntity
+import com.leaf.feature.common.services.server.wanandroid.entities.ListBannerEntity
 import com.leaf.feature.common.services.server.wanandroid.entities.LoginEntity
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -55,4 +56,7 @@ interface IWanAndroidService {
     suspend fun listCollectedArticles(
         @Path("page") page: Int
     ): WanAndroidResponse<ListArticleEntity>
+
+    @GET("banner/json")
+    suspend fun listBanner(): WanAndroidResponse<ListBannerEntity>
 }

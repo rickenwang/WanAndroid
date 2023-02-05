@@ -1,5 +1,6 @@
 package com.leaf.feature.collect.ui
 
+import android.app.Activity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,7 +10,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.leaf.feature.collect.R
-import com.leaf.feature.common.services.article.ArticleListViewState
 import com.leaf.feature.common.widget.fragment.BaseFragment
 import com.leaf.feature.common.widget.rv.DiffMultiTypeAdapter
 import com.therouter.TheRouter
@@ -45,20 +45,21 @@ class CollectArticleListFragment: BaseFragment() {
 
         recyclerView.layoutManager = LinearLayoutManager(context)
         val adapter = DiffMultiTypeAdapter()
-        val delegate = ArticleListViewDelegate()
+        val delegate = CollectArticleListViewDelegate()
         adapter.register(delegate)
         recyclerView.adapter = adapter
 
         val viewModel = ViewModelProvider(this).get(CollectArticleListViewModel::class.java)
+
         lifecycleScope.launch {
-            viewModel.mArticleListFlow.collect {
+            viewModel.mCollectArticleListFlow.collect {
 
                 when(it) {
 
-                    is ArticleListViewState.Success -> {
+                    is CollectArticleListViewState.Success -> {
                         adapter.setContentData(it.items)
                     }
-                    is ArticleListViewState.Failure -> {
+                    is CollectArticleListViewState.Failure -> {
                         // 请先登录
                         if (it.errorCode == -1001) {
                             routeToLogin()
@@ -79,12 +80,12 @@ class CollectArticleListFragment: BaseFragment() {
 
     private fun routeToLogin() {
         TheRouter.build("http://wanandroid.com/login").navigation(this,
-        object : NavigationCallback() {
-            override fun onFound(navigator: Navigator) {
-                super.onFound(navigator)
-                activity?.finish()
-            }
-        })
+            object : NavigationCallback() {
+                override fun onActivityCreated(navigator: Navigator, destActivity: Activity) {
+                    super.onActivityCreated(navigator, destActivity)
+                    activity?.finish()
+                }
+            })
     }
 }
 

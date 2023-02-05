@@ -1,7 +1,5 @@
 package com.leaf.feature.article.ui
 
-import com.leaf.feature.common.services.article.ArticleListItemViewState
-import com.leaf.feature.common.services.article.ArticleListViewState
 import com.leaf.feature.article.model.ArticleListRepository
 import com.leaf.feature.common.widget.viewmodel.BaseViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,11 +24,14 @@ class ArticleListViewModel: BaseViewModel() {
             val items = listArticleEntity.data.datas.map {
                 ArticleListItemViewState(it.title, it.author)
             }
-            mArticleListFlow.value = ArticleListViewState.Success(items)
+            mArticleListFlow.value = if (listArticleEntity.errorCode == 0) {
+                ArticleListViewState.Success(items)
+            } else {
+                ArticleListViewState.Failure(listArticleEntity.errorCode, listArticleEntity.errorMessage, null)
+            }
         } catch (e: Exception) {
             mArticleListFlow.value = ArticleListViewState.Failure(-1, "", e)
         }
-
     }
 
 }

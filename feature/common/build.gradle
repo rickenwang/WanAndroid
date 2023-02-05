@@ -8,6 +8,9 @@ dependencies {
     api "androidx.lifecycle:lifecycle-runtime-ktx:$rootProject.version_config.lifecycle_runtime_ktx"
     // api "androidx.lifecycle:lifecycle-viewmodel-ktx:$rootProject.version_config.lifecycle_viewmodel_ktx"
 
+    api "com.github.bumptech.glide:glide:$rootProject.version_config.glide"
+    kapt "com.github.bumptech.glide:compiler:$rootProject.version_config.glide"
+
     api "com.drakeet.multitype:multitype:$rootProject.version_config.multitype"
     api "cn.therouter:router:${rootProject.version_config.the_router}"
     kapt "cn.therouter:apt:${rootProject.version_config.therouter_kapt}"

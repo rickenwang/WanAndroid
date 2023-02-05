@@ -1,5 +1,6 @@
 package com.leaf.feature.common.widget.rv
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,23 +18,36 @@ abstract class BaseRvDelegate<T : IDiffItem, VH: BaseViewHolder>(@LayoutRes open
 
     abstract fun onCreateViewHolder(item: View): VH
 
+    open fun onCreateItemView(context: Context, parent: ViewGroup): View {
+        val inflater = LayoutInflater.from(context)
+        return inflater.inflate(contentLayoutId, parent, false)
+    }
+
     override fun onCreateViewHolder(inflater: LayoutInflater, parent: ViewGroup): VH {
-        val itemView = inflater.inflate(contentLayoutId, parent, false)
+        val itemView = onCreateItemView(parent.context, parent)
         val holder = onCreateViewHolder(itemView)
-        val adapterPosition = holder.bindingAdapterPosition
-        val item = try {
-            adapter.items[adapterPosition] as T
-        } catch (e: Exception) {
-            null
-        }
 
         // 在 onCreateViewHolder 设置监听，而不是 onBindViewHolder
         itemView.setOnClickListener {
+            val adapterPosition = holder.bindingAdapterPosition
+            val item = try {
+                adapter.items[adapterPosition] as T
+            } catch (e: Exception) {
+                null
+            }
+
             item?.let {
                 onItemClickListener?.onItemClick(holder, item)
             }
         }
         itemView.setOnLongClickListener {
+            val adapterPosition = holder.bindingAdapterPosition
+            val item = try {
+                adapter.items[adapterPosition] as T
+            } catch (e: Exception) {
+                null
+            }
+
             return@setOnLongClickListener if (item != null) {
                 onItemLongClickListener?.onItemLongClick(holder, item)
                 true

@@ -3,7 +3,6 @@ package com.leaf.feature.article.ui
 import android.view.View
 import android.widget.TextView
 import com.leaf.feature.article.R
-import com.leaf.feature.common.services.article.ArticleListItemViewState
 import com.leaf.feature.common.widget.rv.BaseRvDelegate
 import com.leaf.feature.common.widget.rv.BaseViewHolder
 
@@ -41,3 +40,4 @@ class ArticleListItemViewHolder(item: View): BaseViewHolder(item) {
     }
 
 }
+

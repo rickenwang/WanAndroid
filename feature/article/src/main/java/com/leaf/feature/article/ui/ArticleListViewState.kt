@@ -1,4 +1,4 @@
-package com.leaf.feature.common.services.article
+package com.leaf.feature.article.ui
 
 
 /**
@@ -11,7 +11,8 @@ sealed interface ArticleListViewState{
 
     object Loading: ArticleListViewState
 
-    data class Failure(val errorCode: Int, val errorMsg: String?, val exception: Exception?): ArticleListViewState
+    data class Failure(val errorCode: Int, val errorMsg: String?, val exception: Exception?):
+        ArticleListViewState
 
     data class Success(val items: List<ArticleListItemViewState>): ArticleListViewState {}
 

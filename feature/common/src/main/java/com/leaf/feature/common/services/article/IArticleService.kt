@@ -1,7 +1,9 @@
 package com.leaf.feature.common.services.article
 
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.ViewModelStoreOwner
+import androidx.recyclerview.widget.RecyclerView
 import com.leaf.feature.common.services.server.wanandroid.entities.ListArticleEntity
 import com.leaf.feature.common.widget.rv.DiffMultiTypeAdapter
 
@@ -18,5 +20,13 @@ import com.leaf.feature.common.widget.rv.DiffMultiTypeAdapter
  */
 interface IArticleService {
 
+    // 暴露数据层
     suspend fun listArticles(page: Int): ListArticleEntity
+
+    /**
+     *
+     */
+    fun inflateRvWithArticleListDataSource(fragment: Fragment,
+                                           recyclerView: RecyclerView,
+    )
 }

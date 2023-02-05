@@ -4,21 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.leaf.business.home.ui.ArticleListViewDelegate
-import com.leaf.business.home.ui.HomeViewModel
-import com.leaf.feature.common.services.article.ArticleListViewState
+import com.leaf.business.home.ui.BannerItem
+import com.leaf.business.home.ui.BannerViewDelegate
 import com.leaf.feature.common.services.article.IArticleService
-import com.leaf.feature.common.services.banner.IBannerService
 import com.leaf.feature.common.widget.fragment.BaseFragment
 import com.leaf.feature.common.widget.rv.DiffMultiTypeAdapter
 import com.therouter.TheRouter
 import com.therouter.router.Route
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
 
 
 /**
@@ -32,7 +25,6 @@ import kotlinx.coroutines.launch
 @Route(path = "http://wanandroid.com/home")
 class HomeFragment: BaseFragment() {
 
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -45,40 +37,19 @@ class HomeFragment: BaseFragment() {
     }
 
     private fun initView(view: View) {
-        //
-        val recyclerView = view.findViewById<RecyclerView>(R.id.rv_home)
-        initRecyclerView(recyclerView)
+        initRecyclerView(view.findViewById<RecyclerView>(R.id.rv_home))
     }
 
     private fun initRecyclerView(recyclerView: RecyclerView) {
 
-        val viewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
+        // 注入 article 列表数据
+        val articleService = TheRouter.get(IArticleService::class.java)!!
+        articleService.inflateRvWithArticleListDataSource(this, recyclerView)
+        val adapter = recyclerView.adapter as DiffMultiTypeAdapter
 
-        recyclerView.layoutManager = LinearLayoutManager(context)
-        val adapter = DiffMultiTypeAdapter()
-
-        adapter.register(ArticleListViewDelegate())
-
-        recyclerView.adapter = adapter
-
-        lifecycleScope.launch {
-            viewModel.mArticleListFlow.collect {
-
-                when(it) {
-
-                    is ArticleListViewState.Success -> {
-
-                        adapter.setContentData(it.items)
-                    }
-
-                    else -> {}
-                }
-            }
-        }
-
-        lifecycleScope.launch {
-            viewModel.listArticle()
-        }
+        // 注入 Banner 数据，作为列表头部
+        adapter.register(BannerViewDelegate(this))
+        adapter.addHeader(BannerItem())
     }
 
 }

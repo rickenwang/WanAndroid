@@ -1,11 +1,8 @@
 package com.leaf.feature.collect.ui
 
-import com.leaf.feature.common.services.article.ArticleListItemViewState
-import com.leaf.feature.common.services.article.ArticleListViewState
 import com.leaf.feature.collect.model.CollectRepository
 import com.leaf.feature.common.widget.viewmodel.BaseViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-
 
 /**
  *
@@ -15,24 +12,24 @@ class CollectArticleListViewModel: BaseViewModel() {
 
     private val mCollectRepository = CollectRepository()
 
-    val mArticleListFlow: MutableStateFlow<ArticleListViewState> =
-        MutableStateFlow(ArticleListViewState.Init)
+    val mCollectArticleListFlow: MutableStateFlow<CollectArticleListViewState> =
+        MutableStateFlow(CollectArticleListViewState.Init)
 
     suspend fun listArticle() {
-        mArticleListFlow.value = ArticleListViewState.Loading
+        mCollectArticleListFlow.value = CollectArticleListViewState.Loading
 
         try {
-            val listArticleEntity = mCollectRepository.listCollectArticles(0)
-            mArticleListFlow.value = if (listArticleEntity.errorCode == 0) {
-                val items = listArticleEntity.data.datas.map {
-                    ArticleListItemViewState(it.title, it.author)
+            val listCollectArticleEntity = mCollectRepository.listCollectArticles(0)
+            mCollectArticleListFlow.value = if (listCollectArticleEntity.errorCode == 0) {
+                val items = listCollectArticleEntity.data.datas.map {
+                    CollectArticleListItemViewState(it.title, it.author)
                 }
-                ArticleListViewState.Success(items)
+                CollectArticleListViewState.Success(items)
             } else {
-                ArticleListViewState.Failure(listArticleEntity.errorCode, listArticleEntity.errorMessage, null)
+                CollectArticleListViewState.Failure(listCollectArticleEntity.errorCode, listCollectArticleEntity.errorMessage, null)
             }
         } catch (e: Exception) {
-            mArticleListFlow.value = ArticleListViewState.Failure(-1, "", e)
+            mCollectArticleListFlow.value = CollectArticleListViewState.Failure(-1, "", e)
         }
 
     }

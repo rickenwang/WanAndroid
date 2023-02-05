@@ -1,5 +1,10 @@
 package com.leaf.feature.common.services.banner
 
+import android.content.Context
+import android.view.View
+import androidx.fragment.app.Fragment
+import com.leaf.feature.common.services.server.wanandroid.entities.ListArticleEntity
+import com.leaf.feature.common.services.server.wanandroid.entities.ListBannerEntity
 import com.leaf.feature.common.widget.rv.BaseRvDelegate
 import com.leaf.feature.common.widget.rv.BaseViewHolder
 
@@ -10,5 +15,5 @@ import com.leaf.feature.common.widget.rv.BaseViewHolder
  */
 interface IBannerService {
 
-    fun bannerRvDelegate(): BaseRvDelegate<BannerViewState, BaseViewHolder>
+    fun getBanner(context: Context): BannerViewDelegate
 }

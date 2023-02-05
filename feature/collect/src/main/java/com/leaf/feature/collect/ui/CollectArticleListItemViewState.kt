@@ -1,4 +1,4 @@
-package com.leaf.feature.common.services.article
+package com.leaf.feature.collect.ui
 
 import com.leaf.feature.common.widget.rv.IDiffItem
 
@@ -7,7 +7,7 @@ import com.leaf.feature.common.widget.rv.IDiffItem
  *
  * Created by leafwang on 2023/2/3.
  */
-data class ArticleListItemViewState(
+data class CollectArticleListItemViewState(
     val title: String,
     val author: String,
 ): IDiffItem {
@@ -16,7 +16,7 @@ data class ArticleListItemViewState(
     }
 
     override fun contentsEqual(other: Any?): Boolean {
-        return other is ArticleListItemViewState && other.title == title && author == other.author
+        return other is CollectArticleListItemViewState && other.title == title && author == other.author
     }
 
     override fun payload(o: IDiffItem): List<String>? {
